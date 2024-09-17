@@ -2,12 +2,12 @@ package com.liferay.samples.fbo.oauth.override;
 
 import com.liferay.oauth2.provider.model.OAuth2ScopeGrant;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,7 +30,7 @@ public class CustomOAuth2ScopeGrantFinder extends BasePersistenceImpl<OAuth2Scop
 	public static final String FIND_BY_C_A_B_A =
 			CustomOAuth2ScopeGrantFinder.class.getName() + ".findByC_A_B_A";
 	
-	public Collection<OAuth2ScopeGrant> findByC_A_B_A(
+	public List<Long> findByC_A_B_A(
 			long companyId, String applicationName, String bundleSymbolicName,
 			long oauth2AuthorizationId) {
 		
@@ -42,17 +42,17 @@ public class CustomOAuth2ScopeGrantFinder extends BasePersistenceImpl<OAuth2Scop
 			String sql = _customSQL.get(getClass(), FIND_BY_C_A_B_A);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
+			
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
-			sqlQuery.addSynchronizedEntityName("com.liferay.oauth2.provider.model.impl.OAuth2ScopeGrantImpl");
+			sqlQuery.addScalar("oAuth2ScopeGrantId", Type.LONG);
 			
 			queryPos.add(companyId);
 			queryPos.add(applicationName);
 			queryPos.add(bundleSymbolicName);
 			queryPos.add(oauth2AuthorizationId);
 			
-			List<OAuth2ScopeGrant> oAuth2ScopeGrants = (List<OAuth2ScopeGrant>)QueryUtil.list(
+			List<Long> oAuth2ScopeGrants = (List<Long>)QueryUtil.list(
 				sqlQuery, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			return oAuth2ScopeGrants;
@@ -65,14 +65,6 @@ public class CustomOAuth2ScopeGrantFinder extends BasePersistenceImpl<OAuth2Scop
 			closeSession(session);
 		}		
 		
-	}
-	
-	@Override
-	@Reference(
-		target = SERVICE_CONFIGURATION_FILTER,
-		unbind = "-"
-	)
-	public void setConfiguration(Configuration configuration) {
 	}
 
 	@Override

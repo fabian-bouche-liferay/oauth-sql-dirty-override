@@ -4,7 +4,7 @@
 	<sql id="com.liferay.samples.fbo.oauth.override.CustomOAuth2ScopeGrantFinder.findByC_A_B_A">
 		<![CDATA[
 			SELECT
-				OAuth2ScopeGrant.*
+				OAuth2ScopeGrant.oAuth2ScopeGrantId
 		 	FROM
 			 	OAuth2ScopeGrant
 			INNER JOIN
